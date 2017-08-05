@@ -214,4 +214,7 @@ const (
 
 	// PathPrefixCtxKey is the key for the matched virtual-host path prefix
 	PathPrefixCtxKey caddy.CtxKey = "path_prefix"
+
+	// UsingQuicCtxKey is the key used to identify a request as using QUIC transport protocol
+	UsingQuicCtxKey caddy.CtxKey = "using_quic"
 )

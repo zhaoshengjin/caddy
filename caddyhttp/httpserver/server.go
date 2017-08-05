@@ -92,7 +92,12 @@ func NewServer(addr string, group []*SiteConfig) (*Server, error) {
 	if s.Server.TLSConfig != nil {
 		// enable QUIC if desired (requires HTTP/2)
 		if HTTP2 && QUIC {
-			s.quicServer = &h2quic.Server{Server: s.Server}
+			// FIXME: The clone here is required because h2quic.Server embeds a pointer to s.Server
+			// meaning that they share the same Handler. Perhaps a better detection method
+			// could be used.
+			var localServer http.Server = *s.Server
+			s.quicServer = &h2quic.Server{Server: &localServer}
+			s.quicServer.Handler = s.wrapUsingQuicHandler(s.Server.Handler)
 			s.Server.Handler = s.wrapWithSvcHeaders(s.Server.Handler)
 		}
 
@@ -222,7 +227,15 @@ func makeHTTPServerWithTimeouts(addr string, group []*SiteConfig) *http.Server {
 
 func (s *Server) wrapWithSvcHeaders(previousHandler http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r = r.WithContext(context.WithValue(r.Context(), UsingQuicCtxKey, false))
 		s.quicServer.SetQuicHeaders(w.Header())
+		previousHandler.ServeHTTP(w, r)
+	}
+}
+
+func (s *Server) wrapUsingQuicHandler(previousHandler http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		r = r.WithContext(context.WithValue(r.Context(), UsingQuicCtxKey, true))
 		previousHandler.ServeHTTP(w, r)
 	}
 }

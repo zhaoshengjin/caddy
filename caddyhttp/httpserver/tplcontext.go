@@ -385,6 +385,14 @@ func (c Context) IsMITM() bool {
 	return false
 }
 
+// IsQuick returns true if the current request is using the QUIC transport protocol
+func (c Context) IsUsingQUIC() bool {
+	if val, ok := c.Req.Context().Value(UsingQuicCtxKey).(bool); ok {
+		return val
+	}
+	return false
+}
+
 // RandomString generates a random string of random length given
 // length bounds. Thanks to http://stackoverflow.com/a/35615565/1048862
 // for the clever technique that is fairly fast, secure, and maintains

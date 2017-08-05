@@ -318,6 +318,13 @@ func (r *replacer) getSubstitution(key string) string {
 			return "unlikely"
 		}
 		return "unknown"
+	case "{quic}":
+		if val, ok := r.request.Context().Value(UsingQuicCtxKey).(bool); ok {
+			if val {
+				return "quic"
+			}
+		}
+		return r.emptyValue
 	case "{status}":
 		if r.responseRecorder == nil {
 			return r.emptyValue
