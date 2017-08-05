@@ -536,6 +536,3 @@ func SafePath(siteRoot, reqPath string) string {
 	}
 	return filepath.Join(siteRoot, filepath.FromSlash(path.Clean("/"+reqPath)))
 }
-
-// OriginalURLCtxKey is the key for accessing the original, incoming URL on an HTTP request.
-const OriginalURLCtxKey = caddy.CtxKey("original_url")

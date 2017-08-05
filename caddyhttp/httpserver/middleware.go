@@ -208,4 +208,10 @@ const (
 
 	// RequestIDCtxKey is the key for the U4 UUID value
 	RequestIDCtxKey caddy.CtxKey = "request_id"
+
+	// OriginalURLCtxKey is the key for accessing the original, incoming URL on an HTTP request.
+	OriginalURLCtxKey caddy.CtxKey = "original_url"
+
+	// PathPrefixCtxKey is the key for the matched virtual-host path prefix
+	PathPrefixCtxKey caddy.CtxKey = "path_prefix"
 )

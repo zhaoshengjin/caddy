@@ -222,7 +222,7 @@ func TestServeHTTP(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		// set up response writer and rewuest
+		// set up response writer and request
 		responseRecorder := httptest.NewRecorder()
 		request, err := http.NewRequest("GET", test.url, nil)
 		if err != nil {
